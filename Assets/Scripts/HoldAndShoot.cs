@@ -11,78 +11,60 @@ public class HoldAndShoot : MonoBehaviour
         Full
     }
     public ProjectileStatus projectileStatus; // Status of the projectile
-    public bool readyToShoot; // Whether the projectile can be shot
     public float chargeValue; // Value of the charge
     public float chargeRate; // Change in the charge value
     public float chargeThreshold; // Maximum charge value
     public GameObject projectilePrefab; // Projectile prefab
-    public Vector3 projectileSpawnPos; // The spawn position transform of the projectile
-    public Transform projectileTransform; // The transform of the projectile
-    public ProjectileMovement projectileMovement; // Reference to the projectile movement script
-    public Vector3 projectileScale; // Scale of the projectile
+    public Transform projectileSpawnPos; // The spawn position transform of the projectile
     public float projectileForce; // Force of projectile
+    private Transform projectileTransform; // The transform of the projectile
+    private ProjectileMovement projectileMovement; // Reference to the projectile movement script
+    private Vector3 projectileScale; // Scale of the projectile
 
     // Start is called before the first frame update
     void Start()
-    {
+    {   
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Clicked");
-        }
-        else if (Input.GetMouseButton(0))
-        {
-            Debug.Log("HOLD");
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            Debug.Log("Uncliked");
-        }
+        Debug.DrawRay(transform.position, transform.forward * 10f, Color.black);
         ShootProjectile();
-        if (chargeValue >= chargeThreshold)
-        {
-            projectileStatus = ProjectileStatus.Full;
-            readyToShoot = true;
-        }
-        else
-        {
-            ChargeProjectile();
-        }
+        ChargeProjectile();
     }
 
     // Function to handle charging of the projectile
     private void ChargeProjectile()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && projectileStatus != ProjectileStatus.Full)
         {
             chargeValue += chargeRate * Time.deltaTime;
             if (projectileStatus == ProjectileStatus.Empty)
             {
-                GameObject projectile = Instantiate(projectilePrefab, transform.position + projectileSpawnPos, Quaternion.identity);
-
+                GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPos.position, transform.rotation);
+                projectile.transform.parent = transform;
                 projectileTransform = projectile.transform;
                 projectileMovement = projectile.GetComponent<ProjectileMovement>();
                 projectileStatus = ProjectileStatus.Charging;
             }
+            if (chargeValue >= chargeThreshold)
+            {
+                projectileStatus = ProjectileStatus.Full;
+            }
             UpdateProjectileScale();
-            readyToShoot = true;
-         
         }
     }
 
     // Function to shoot the projectile
     private void ShootProjectile()
     {
-        if (Input.GetMouseButtonDown(0) && readyToShoot)
+        if (Input.GetMouseButtonUp(0))
         {
             projectileMovement.ApplyForceToProjectile(chargeValue * projectileForce);
-            readyToShoot = false;
-            chargeValue = 0;
+            chargeValue = 0.1f;
+            projectileStatus = ProjectileStatus.Empty;
         }
     }
 
@@ -93,5 +75,14 @@ public class HoldAndShoot : MonoBehaviour
         projectileScale.y = chargeValue;
         projectileScale.z = chargeValue;
         projectileTransform.localScale = projectileScale;
+    }
+    
+    // Handles the case when the projectile is still charging and collided with a game object
+    public void HandleProjectileCollisionBeforeShooting()
+    {
+        projectileStatus = ProjectileStatus.Empty;
+        chargeValue = 0.1f;
+        projectileTransform = null;
+        projectileMovement = null;
     }
 }

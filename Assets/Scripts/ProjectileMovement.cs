@@ -5,16 +5,18 @@ using UnityEngine;
 public class ProjectileMovement : MonoBehaviour 
 {
     public Rigidbody projectileRb; // Rigid body of the projectile
+    private HoldAndShoot holdAndShootScript; // Reference to the hold and shoot script
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        holdAndShootScript = GameObject.FindGameObjectWithTag("Player").GetComponent<HoldAndShoot>();
     }
 
     // Check for collision
     private void OnCollisionEnter(Collision collision)
     {
+        holdAndShootScript.HandleProjectileCollisionBeforeShooting();
         if (collision.gameObject.tag == "Enemy") // Collide with enemy objects
         {
             collision.gameObject.SetActive(false); // Destroy the damage object
@@ -24,7 +26,7 @@ public class ProjectileMovement : MonoBehaviour
 
     public void ApplyForceToProjectile(float force)
     {
-        projectileRb.AddForce(Vector3.forward * force);
         projectileRb.useGravity = true;
+        projectileRb.AddForce(transform.forward * force) ;
     }
 }
