@@ -17,22 +17,17 @@ public class HoldAndShoot : MonoBehaviour
     public GameObject projectilePrefab; // Projectile prefab
     public Transform projectileSpawnPos; // The spawn position transform of the projectile
     public float projectileForce; // Force of projectile
-    private Transform projectileTransform; // The transform of the projectile
+    private GameObject currentProjectile; // The current projectile the player is holding and charging
     private ProjectileMovement projectileMovement; // Reference to the projectile movement script
     private Vector3 projectileScale; // Scale of the projectile
-
-    // Start is called before the first frame update
-    void Start()
-    {   
-
-    }
 
     // Update is called once per frame
     void Update()
     {
         Debug.DrawRay(transform.position, transform.forward * 10f, Color.black);
-        ShootProjectile();
         ChargeProjectile();
+        ShootProjectile();
+        UpdateProjectilePos();
     }
 
     // Function to handle charging of the projectile
@@ -41,11 +36,12 @@ public class HoldAndShoot : MonoBehaviour
         if (Input.GetMouseButton(0) && projectileStatus != ProjectileStatus.Full)
         {
             chargeValue += chargeRate * Time.deltaTime;
+            chargeRate -= 0.3f * Time.deltaTime;
             if (projectileStatus == ProjectileStatus.Empty)
             {
                 GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPos.position, transform.rotation);
+                currentProjectile = projectile;
                 projectile.transform.parent = transform;
-                projectileTransform = projectile.transform;
                 projectileMovement = projectile.GetComponent<ProjectileMovement>();
                 projectileStatus = ProjectileStatus.Charging;
             }
@@ -60,11 +56,10 @@ public class HoldAndShoot : MonoBehaviour
     // Function to shoot the projectile
     private void ShootProjectile()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && projectileStatus != ProjectileStatus.Empty)
         {
             projectileMovement.ApplyForceToProjectile(chargeValue * projectileForce);
-            chargeValue = 0.1f;
-            projectileStatus = ProjectileStatus.Empty;
+            ResetProjectile();
         }
     }
 
@@ -74,15 +69,39 @@ public class HoldAndShoot : MonoBehaviour
         projectileScale.x = chargeValue;
         projectileScale.y = chargeValue;
         projectileScale.z = chargeValue;
-        projectileTransform.localScale = projectileScale;
+        if (currentProjectile)
+        {
+            currentProjectile.transform.localScale = projectileScale;
+        }
     }
-    
-    // Handles the case when the projectile is still charging and collided with a game object
-    public void HandleProjectileCollisionBeforeShooting()
+
+    // Function to update the position
+    private void UpdateProjectilePos()
+    {
+        Debug.Log(currentProjectile);
+        if (currentProjectile)
+        {
+            currentProjectile.transform.position = projectileSpawnPos.position;
+        }
+    }
+
+    // Function to reset everything regarding the projectile and the charge value and rate
+    private void ResetProjectile()
     {
         projectileStatus = ProjectileStatus.Empty;
         chargeValue = 0.1f;
-        projectileTransform = null;
+        chargeRate = 0.75f;
         projectileMovement = null;
+        currentProjectile.transform.parent = null;
+        currentProjectile = null;
+    }
+    
+    // Handles the case when the projectile is still charging and collided with a game object
+    public void HandleProjectileCollisionBeforeShooting(GameObject projectile)
+    {
+        if (currentProjectile == projectile)
+        {
+            ResetProjectile();
+        }
     }
 }

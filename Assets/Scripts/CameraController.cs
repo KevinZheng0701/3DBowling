@@ -44,7 +44,7 @@ public class CameraController : MonoBehaviour
     {
         cameraView += DeltaLook();
         cameraView.y = Mathf.Clamp(cameraView.y, -cameraLock, cameraLock); // Make the camera turn up and down without going over 90 degrees
-        playerTransform.rotation = Quaternion.Euler(0f, cameraView.x, 0f); // Rotate the the player
         transform.rotation = Quaternion.Euler(-cameraView.y, cameraView.x, 0f); // Rotate the camera
+        playerTransform.rotation = Quaternion.Euler(0f, cameraView.x, 0f); // Rotate the the player
     }
 }
