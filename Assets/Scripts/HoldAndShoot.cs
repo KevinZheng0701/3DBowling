@@ -78,7 +78,6 @@ public class HoldAndShoot : MonoBehaviour
     // Function to update the position
     private void UpdateProjectilePos()
     {
-        Debug.Log(currentProjectile);
         if (currentProjectile)
         {
             currentProjectile.transform.position = projectileSpawnPos.position;
@@ -96,12 +95,4 @@ public class HoldAndShoot : MonoBehaviour
         currentProjectile = null;
     }
     
-    // Handles the case when the projectile is still charging and collided with a game object
-    public void HandleProjectileCollisionBeforeShooting(GameObject projectile)
-    {
-        if (currentProjectile == projectile)
-        {
-            ResetProjectile();
-        }
-    }
 }
