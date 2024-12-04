@@ -128,5 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a498401d308264459c72aaff2b6435b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifespan: 10
+  lifespan: 5
   haveFallen: 0
+  rb: {fileID: 3841592427028205456}

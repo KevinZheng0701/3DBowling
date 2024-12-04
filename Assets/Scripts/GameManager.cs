@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public int round;
     public float score;
+    public float totalScore;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,4 +19,17 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    public bool HaveNextRound()
+    {
+        if (round < 10)
+        {
+            round++;
+            totalScore += score;
+            score = 0;
+            return true;
+        }
+        return false;
+    }
+
 }

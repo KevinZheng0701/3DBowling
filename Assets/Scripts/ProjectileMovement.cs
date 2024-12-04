@@ -5,12 +5,13 @@ using UnityEngine;
 public class ProjectileMovement : MonoBehaviour 
 {
     public Rigidbody projectileRb; // Rigid body of the projectile
-    private float projectileLife = 10f; 
+    private float projectileLife = 5f; 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        GameObject invisibleWall = GameObject.FindGameObjectWithTag("Invisible");
+        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), invisibleWall.GetComponent<Collider>());
     }
 
     public void ApplyForceToProjectile(float force)

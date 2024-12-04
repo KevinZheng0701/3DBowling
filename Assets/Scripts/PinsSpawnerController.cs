@@ -7,7 +7,9 @@ public class PinsSpawnerController : MonoBehaviour
 {
     public GameObject pinPrefab;
     public Transform[] pinsSpawnLocation;
-    public List<GameObject> pins = new List<GameObject>();
+    public GameManager gameManager;
+    private List<GameObject> pins = new List<GameObject>();
+    private int fallenPins;
 
     // Start is called before the first frame update
     void Start()
@@ -26,8 +28,10 @@ public class PinsSpawnerController : MonoBehaviour
         for (int i = 0; i < pinsSpawnLocation.Length; i++)
         {
             GameObject pin = Instantiate(pinPrefab, pinsSpawnLocation[i].position, Quaternion.identity);
-            pins.Append(pin);
+            pin.transform.SetParent(transform);
+            pins.Add(pin);
         }
+        fallenPins = 0;
     }
 
     public void ResetPins()
@@ -36,7 +40,23 @@ public class PinsSpawnerController : MonoBehaviour
         {
             GameObject pin = pins[i];
             pin.transform.position = pinsSpawnLocation[i].position;
+            pin.transform.rotation = Quaternion.identity;
+            fallenPins = 0;
             pin.SetActive(true);
+        }
+    }
+
+    public void ReportPinStatus()
+    {
+        fallenPins += 1;
+        if (fallenPins == pins.Count)
+        {
+            bool isNextRound = gameManager.HaveNextRound();
+            Debug.Log(isNextRound);
+            if (isNextRound)
+            {
+                ResetPins();
+            }
         }
     }
 }
