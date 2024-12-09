@@ -20,14 +20,19 @@ public class HoldAndShoot : MonoBehaviour
     private GameObject currentProjectile; // The current projectile the player is holding and charging
     private ProjectileMovement projectileMovement; // Reference to the projectile movement script
     private Vector3 projectileScale; // Scale of the projectile
+    public bool canThrow; // Whether the player can start shooting
+    public int ballsThrown; // The number of times the player throw the ball
 
     // Update is called once per frame
     void Update()
     {
         Debug.DrawRay(transform.position, transform.forward * 10f, Color.black);
-        ChargeProjectile();
-        ShootProjectile();
-        UpdateProjectilePos();
+        if (canThrow)
+        {
+            ChargeProjectile();
+            ShootProjectile();
+            UpdateProjectilePos();
+        }
     }
 
     // Function to handle charging of the projectile
@@ -59,6 +64,7 @@ public class HoldAndShoot : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && projectileStatus != ProjectileStatus.Empty)
         {
             projectileMovement.ApplyForceToProjectile(chargeValue * projectileForce);
+            ballsThrown += 1;
             ResetProjectile();
         }
     }
@@ -85,7 +91,7 @@ public class HoldAndShoot : MonoBehaviour
     }
 
     // Function to reset everything regarding the projectile and the charge value and rate
-    private void ResetProjectile()
+    public void ResetProjectile()
     {
         projectileStatus = ProjectileStatus.Empty;
         chargeValue = 0.1f;

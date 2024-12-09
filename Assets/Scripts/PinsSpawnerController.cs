@@ -10,6 +10,7 @@ public class PinsSpawnerController : MonoBehaviour
     public GameManager gameManager;
     private List<GameObject> pins = new List<GameObject>();
     private int fallenPins;
+    public HoldAndShoot holdAndShootScript;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,7 @@ public class PinsSpawnerController : MonoBehaviour
             pins.Add(pin);
         }
         fallenPins = 0;
+        holdAndShootScript.canThrow = true;
     }
 
     public void ResetPins()
@@ -44,6 +46,7 @@ public class PinsSpawnerController : MonoBehaviour
             fallenPins = 0;
             pin.SetActive(true);
         }
+        holdAndShootScript.canThrow = true;
     }
 
     public void ReportPinStatus()
@@ -55,7 +58,7 @@ public class PinsSpawnerController : MonoBehaviour
             Debug.Log(isNextRound);
             if (isNextRound)
             {
-                ResetPins();
+                Invoke("ResetPins", 3f); // Reset after 3 seconds
             }
         }
     }
