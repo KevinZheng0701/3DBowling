@@ -16,7 +16,7 @@ public class ProjectileMovement : MonoBehaviour
     public void ApplyForceToProjectile(float force)
     {
         projectileRb.useGravity = true;
-        projectileRb.AddForce(transform.forward * force);
+        projectileRb.AddForce(transform.forward * force / projectileRb.mass);
     }
 
 }

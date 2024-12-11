@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
         uiManager.UpdateTotalScore(totalScore);
         round++;
         score = 0;
+        holdAndShootScript.ballsThrown = 0;
         if (round < 10)
         {
             return true;

@@ -78,6 +78,7 @@ public class HoldAndShoot : MonoBehaviour
         if (currentProjectile)
         {
             currentProjectile.transform.localScale = projectileScale;
+            projectileMovement.projectileRb.mass += chargeRate * Time.deltaTime;
         }
     }
 
@@ -97,8 +98,10 @@ public class HoldAndShoot : MonoBehaviour
         chargeValue = 0.1f;
         chargeRate = 0.75f;
         projectileMovement = null;
-        currentProjectile.transform.parent = null;
+        if (currentProjectile)
+        {
+            currentProjectile.transform.parent = null;
+        }  
         currentProjectile = null;
     }
-    
 }

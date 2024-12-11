@@ -28,6 +28,6 @@ public class UIManager : MonoBehaviour
 
     public void UpdateTotalScore(int score)
     {
-        totalScoreText.text = score.ToString();
+        totalScoreText.text = "Total: " + score.ToString();
     }
 }
