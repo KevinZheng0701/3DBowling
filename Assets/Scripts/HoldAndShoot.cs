@@ -22,6 +22,7 @@ public class HoldAndShoot : MonoBehaviour
     private Vector3 projectileScale; // Scale of the projectile
     public bool canThrow; // Whether the player can start shooting
     public int ballsThrown; // The number of times the player throw the ball
+    public ChargeBar chargeBarScript; // Reference to the charge ball script
 
     // Update is called once per frame
     void Update()
@@ -49,12 +50,14 @@ public class HoldAndShoot : MonoBehaviour
                 projectile.transform.parent = transform;
                 projectileMovement = projectile.GetComponent<ProjectileMovement>();
                 projectileStatus = ProjectileStatus.Charging;
+                chargeBarScript.ShowChargeBar();
             }
             if (chargeValue >= chargeThreshold)
             {
                 projectileStatus = ProjectileStatus.Full;
             }
             UpdateProjectileScale();
+            chargeBarScript.UpdateChargeValue(chargeValue);
         }
     }
 
@@ -101,7 +104,9 @@ public class HoldAndShoot : MonoBehaviour
         if (currentProjectile)
         {
             currentProjectile.transform.parent = null;
-        }  
+        }
         currentProjectile = null;
+        chargeBarScript.ResetValue();
+        chargeBarScript.HideChargeBar();
     }
 }
