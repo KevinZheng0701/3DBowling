@@ -44,9 +44,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Reset jump flag when player touches the ground or other objects
+    // Reset jump flag when player touches the ground
     private void OnCollisionEnter(Collision collision)
     {
-        isJumping = false;
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;
+        }
     }
 }

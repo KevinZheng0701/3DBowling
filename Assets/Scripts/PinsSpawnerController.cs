@@ -28,7 +28,7 @@ public class PinsSpawnerController : MonoBehaviour
     {
         for (int i = 0; i < pinsSpawnLocation.Length; i++)
         {
-            GameObject pin = Instantiate(pinPrefab, pinsSpawnLocation[i].position, Quaternion.identity);
+            GameObject pin = Instantiate(pinPrefab, pinsSpawnLocation[i].position, pinPrefab.transform.rotation);
             pin.transform.SetParent(transform);
             pins.Add(pin);
         }
@@ -42,7 +42,7 @@ public class PinsSpawnerController : MonoBehaviour
         {
             GameObject pin = pins[i];
             pin.transform.position = pinsSpawnLocation[i].position;
-            pin.transform.rotation = Quaternion.identity;
+            pin.transform.rotation = pinPrefab.transform.rotation;
             fallenPins = 0;
             pin.SetActive(true);
         }
@@ -55,7 +55,6 @@ public class PinsSpawnerController : MonoBehaviour
         if (fallenPins == pins.Count)
         {
             bool isNextRound = gameManager.HaveNextRound();
-            Debug.Log(isNextRound);
             if (isNextRound)
             {
                 Invoke("ResetPins", 3f); // Reset after 3 seconds

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BowlingPinController : MonoBehaviour
 {
     public float lifespan;
-    public bool haveFallen = false;
+    public bool haveFallen;
     public Rigidbody rb;
     private PinsSpawnerController pinsSpawnerController;
 
@@ -34,9 +34,12 @@ public class BowlingPinController : MonoBehaviour
                 pinsSpawnerController.ReportPinStatus();
                 gameObject.SetActive(false);
             }
-        } else
+        }
+        else
         {
-            if (Mathf.Abs(transform.rotation.eulerAngles.x) > 89 || Mathf.Abs(transform.rotation.eulerAngles.z) > 89)
+            float xRotation = transform.rotation.eulerAngles.x;
+            float zRotation = transform.rotation.eulerAngles.z;
+            if (Mathf.Abs(xRotation) < 0.1f || Mathf.Abs(xRotation - 180f) < 0.1f || Mathf.Abs(zRotation - 90f) < 0.1f || Mathf.Abs(zRotation - 270f) < 0.1f)
             {
                 haveFallen = true;
             }

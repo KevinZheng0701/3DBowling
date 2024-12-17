@@ -7,6 +7,7 @@ TagManager:
   - Ball
   - Pin
   - Invisible
+  - Ground
   layers:
   - Default
   - TransparentFX
