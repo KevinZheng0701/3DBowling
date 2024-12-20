@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PinsSpawnerController : MonoBehaviour
@@ -18,12 +17,6 @@ public class PinsSpawnerController : MonoBehaviour
         SpawnPins();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void SpawnPins()
     {
         for (int i = 0; i < pinsSpawnLocation.Length; i++)
@@ -33,7 +26,7 @@ public class PinsSpawnerController : MonoBehaviour
             pins.Add(pin);
         }
         fallenPins = 0;
-        holdAndShootScript.canThrow = true;
+        holdAndShootScript.AllowThrow();
     }
 
     public void ResetPins()
@@ -46,18 +39,19 @@ public class PinsSpawnerController : MonoBehaviour
             fallenPins = 0;
             pin.SetActive(true);
         }
-        holdAndShootScript.canThrow = true;
+        holdAndShootScript.AllowThrow();
     }
 
     public void ReportPinStatus()
     {
         fallenPins += 1;
+        Debug.Log(fallenPins);
         if (fallenPins == pins.Count)
         {
             bool isNextRound = gameManager.HaveNextRound();
             if (isNextRound)
             {
-                Invoke("ResetPins", 3f); // Reset after 3 seconds
+                Invoke("ResetPins", 3f);
             }
         }
     }

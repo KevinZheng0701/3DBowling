@@ -11,20 +11,20 @@ public class HoldAndShoot : MonoBehaviour
         Full
     }
     public BallStatus ballStatus; // Status of the ball
+    private bool canThrow; // Whether the player can start shooting
     public float chargeValue; // Value of the charge
     public float chargeRate; // Change in the charge value
     private float currentChargeValue; // Current charge value
     private float currentChargeRate; // Current change in the charge value
     public float chargeThreshold; // Maximum charge value
-    public GameObject projectilePrefab; // Projectile prefab
-    public Transform projectileSpawnPos; // The spawn position transform of the projectile
     public float throwForce; // Force of throwing
+    public Transform projectileSpawnPos; // The spawn position transform of the projectile
     private GameObject currentProjectile; // The current projectile the player is holding and charging
-    private BallMovement ballMovementScript; // Reference to the ball movement script
+    public GameObject projectilePrefab; // Projectile prefab
     private Vector3 projectileScale; // Scale of the projectile
-    public bool canThrow; // Whether the player can start shooting
-    public int ballsThrown; // The number of times the player throw the ball
     public ChargeBar chargeBarScript; // Reference to the charge ball script
+    private BallMovement ballMovementScript; // Reference to the ball movement script
+    public BallCollector ballCollectorScript; // Reference to the ball collect
 
     // Start is called before the first frame update
     void Start()
@@ -74,8 +74,8 @@ public class HoldAndShoot : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0) && ballStatus != BallStatus.Empty)
         {
+            ballCollectorScript.AddBall(currentProjectile);
             ballMovementScript.ApplyForceToBall(throwForce * currentChargeValue);
-            ballsThrown += 1;
             ResetProjectile();
         }
     }
@@ -116,5 +116,15 @@ public class HoldAndShoot : MonoBehaviour
         currentProjectile = null;
         chargeBarScript.ResetValue();
         chargeBarScript.HideChargeBar();
+    }
+
+    public void StopThrow()
+    {
+        canThrow = false;
+    }
+
+    public void AllowThrow()
+    {
+        canThrow = true;
     }
 }

@@ -4,60 +4,36 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public int round;
-    public int score;
-    public int totalScore;
+    private int round;
+    private int score;
+    private int totalScore;
     public HoldAndShoot holdAndShootScript;
+    public BallCollector ballCollectorScript;
     public UIManager uiManager;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public bool HaveNextRound()
     {
-        holdAndShootScript.canThrow = false;
-        // Destroy all previous balls
+        holdAndShootScript.StopThrow();
         holdAndShootScript.ResetProjectile();
-        GameObject[] remainingBalls = GameObject.FindGameObjectsWithTag("Ball");
-        foreach (GameObject ball in remainingBalls)
-        {
-            Destroy(ball);
-        }
         // Calculate the score
-        int shots = holdAndShootScript.ballsThrown;
-        switch(shots)
+        int ballsThrown = ballCollectorScript.GetNumberOfBalls();
+        // Add 6 extra points for a strike
+        if (ballsThrown == 1)
         {
-            case 1:
-                score = 10;
-                break;
-            case 2:
-                score = 8;
-                break;
-            case 3:
-                score = 5;
-                break;
-            case 4:
-                score = 1;
-                break;
-            default:
-                score = 0;
-                break;
+            score += 6;
         }
-        uiManager.UpdateScore(score, round);
+        else if (ballsThrown == 2) // Add 2 points for a spare
+        {
+            score += 2;
+        }
+        score += Mathf.Max(0, 10 - ballsThrown);
+        ballCollectorScript.DestroyAllBalls();
         totalScore += score;
+        uiManager.UpdateScore(score, round);
         uiManager.UpdateTotalScore(totalScore);
         round++;
         score = 0;
-        holdAndShootScript.ballsThrown = 0;
+        Debug.Log(round);
         if (round < 10)
         {
             return true;
