@@ -5,29 +5,28 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    public TextMeshProUGUI[] scoreTexts;
-    public TextMeshProUGUI totalScoreText;
+    public TextMeshProUGUI[] scoreTexts;        // Text elements for the round scores
+    public TextMeshProUGUI totalScoreText;      // Text element for total score
+    public TextMeshProUGUI gameOverScoreText;   // Text element for game over score
+    public GameObject gameOverScreen;           // Game over screen UI
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Updates the score for the current round
     public void UpdateScore(int score, int round)
     {
         TextMeshProUGUI scoreText = scoreTexts[round];
         scoreText.text = score.ToString();
     }
 
+    // Updates the total score
     public void UpdateTotalScore(int score)
     {
         totalScoreText.text = "Total: " + score.ToString();
+    }
+
+    // Displays the game over screen with the total score
+    public void ShowGameOverScreen(int totalScore)
+    {
+        gameOverScoreText.text = "Your total score: " + totalScore.ToString();
+        gameOverScreen.SetActive(true);
     }
 }

@@ -5,50 +5,45 @@ using UnityEngine.UI;
 
 public class ChargeBar : MonoBehaviour
 {
-    private float value; // Current value of the bar
-    public float maxValue; // Max value of the charge bar
-    public Image fillImage; // The image of the fill
-    public GameObject chargeBar; // The charge bar game object
-    public Gradient colorGradient; // Color gradient of the charge bar
+    private float value; // Current value of the charge bar
+    public float maxValue; // Max value for the charge bar
+    public Image fillImage; // Image component that represents the fill
+    public GameObject chargeBar; // The game object containing the charge bar UI
+    public Gradient colorGradient; // Color gradient based on charge percentage
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Function to hide the charge bar
+    // Hides the charge bar
     public void HideChargeBar()
     {
         chargeBar.SetActive(false);
     }
 
-    // Function to show the charge bar
+    // Shows the charge bar
     public void ShowChargeBar()
     {
         chargeBar.SetActive(true);
     }
 
-    // Function to reset the value to 0
+    // Resets the charge value to 0
     public void ResetValue()
     {
         value = 0;
-        UpdateChargeBar();
+        UpdateChargeBar(); // Update UI after resetting the value
     }
 
-    // Function to update the charge amount
+    // Updates the charge value and clamps it between 0 and max value
     public void UpdateChargeValue(float amount)
     {
-        value = amount;
-        value = Mathf.Clamp(value, 0, maxValue);
-        UpdateChargeBar();
+        value = Mathf.Clamp(amount, 0, maxValue);
+        UpdateChargeBar(); // Update UI after changing the value
     }
 
-    // Function to update the fill of the charge bar
+    // Updates the UI elements (fill amount and color) based on current value
     private void UpdateChargeBar()
     {
+        // Calculate the fill percentage and apply to the fill image
         float fillPercentage = value / maxValue;
         fillImage.fillAmount = fillPercentage;
+        // Set the fill color based on the charge percentage
         fillImage.color = colorGradient.Evaluate(fillPercentage);
     }
 }

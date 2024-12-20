@@ -4,29 +4,30 @@ using UnityEngine;
 
 public class HoldAndShoot : MonoBehaviour
 {
+    // Enum to track the status of the ball
     public enum BallStatus
     {
         Empty,
         Charging,
         Full
     }
-    public BallStatus ballStatus; // Status of the ball
-    private bool canThrow; // Whether the player can start shooting
-    public float chargeValue; // Value of the charge
-    public float chargeRate; // Change in the charge value
-    private float currentChargeValue; // Current charge value
-    private float currentChargeRate; // Current change in the charge value
-    public float chargeThreshold; // Maximum charge value
-    public float throwForce; // Force of throwing
-    public Transform projectileSpawnPos; // The spawn position transform of the projectile
-    private GameObject currentProjectile; // The current projectile the player is holding and charging
-    public GameObject projectilePrefab; // Projectile prefab
+    public BallStatus ballStatus; // Current status of the ball
+    private bool canThrow; // Whether the player can throw the ball
+    public float chargeValue; // Initial charge value
+    public float chargeRate; // Rate at which the charge value changes
+    private float currentChargeValue; // Current value of the charge
+    private float currentChargeRate; // Current rate of charge change
+    public float chargeThreshold; // Max charge value before the ball is considered full
+    public float throwForce; // Force applied when the ball is thrown
+    public Transform projectileSpawnPos; // Position where the ball spawns
+    private GameObject currentProjectile; // Currently charged projectile
+    public GameObject projectilePrefab; // The projectile prefab
     private Vector3 projectileScale; // Scale of the projectile
-    public ChargeBar chargeBarScript; // Reference to the charge ball script
+    public ChargeBar chargeBarScript; // Reference to the charge bar script
     private BallMovement ballMovementScript; // Reference to the ball movement script
-    public BallCollector ballCollectorScript; // Reference to the ball collect
+    public BallCollector ballCollectorScript; // Reference to the ball collector script
 
-    // Start is called before the first frame update
+    // Initialize variables
     void Start()
     {
         currentChargeRate = chargeRate;
@@ -44,13 +45,16 @@ public class HoldAndShoot : MonoBehaviour
         }
     }
 
-    // Function to handle charging of the projectile
+    // Handle charging the projectile when holding the mouse button
     private void ChargeProjectile()
     {
+        // If the mouse button is held and the ball is not fully charged
         if (Input.GetMouseButton(0) && ballStatus != BallStatus.Full)
         {
+            // Increase charge value and decrease the charge rate over time
             currentChargeValue += currentChargeRate * Time.deltaTime;
             currentChargeRate -= 0.3f * Time.deltaTime;
+            // Instantiate the projectile if it hasn't been created yet
             if (ballStatus == BallStatus.Empty)
             {
                 GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPos.position, projectilePrefab.transform.rotation);
@@ -60,16 +64,18 @@ public class HoldAndShoot : MonoBehaviour
                 ballStatus = BallStatus.Charging;
                 chargeBarScript.ShowChargeBar();
             }
+            // Set the ball to full charge if the threshold is reached
             if (currentChargeValue >= chargeThreshold)
             {
                 ballStatus = BallStatus.Full;
             }
+            // Update the projectile's scale and the charge bar
             UpdateProjectileScale();
             chargeBarScript.UpdateChargeValue(currentChargeValue);
         }
     }
 
-    // Function to shoot the projectile
+    // Shoot the projectile when the mouse button is released
     private void ShootProjectile()
     {
         if (Input.GetMouseButtonUp(0) && ballStatus != BallStatus.Empty)
@@ -80,7 +86,7 @@ public class HoldAndShoot : MonoBehaviour
         }
     }
 
-    // Function to update the scale
+    // Update the scale of the projectile based on the current charge value
     private void UpdateProjectileScale()
     {
         projectileScale.x = currentChargeValue;
@@ -89,11 +95,11 @@ public class HoldAndShoot : MonoBehaviour
         if (currentProjectile)
         {
             currentProjectile.transform.localScale = projectileScale;
-            ballMovementScript.ballRb.mass += currentChargeRate * Time.deltaTime * 0.25f;
+            ballMovementScript.ballRb.mass += currentChargeRate * Time.deltaTime * 0.2f; // Adjust mass based on charge rate
         }
     }
 
-    // Function to update the position
+    // Update the projectile's position to match the spawn position
     private void UpdateProjectilePos()
     {
         if (currentProjectile)
@@ -102,7 +108,7 @@ public class HoldAndShoot : MonoBehaviour
         }
     }
 
-    // Function to reset everything regarding the projectile and the charge value and rate
+    // Reset everything related to the projectile and charge state
     public void ResetProjectile()
     {
         ballStatus = BallStatus.Empty;
@@ -118,11 +124,13 @@ public class HoldAndShoot : MonoBehaviour
         chargeBarScript.HideChargeBar();
     }
 
+    // Stop the ability to throw the ball
     public void StopThrow()
     {
         canThrow = false;
     }
 
+    // Allow the player to throw the ball
     public void AllowThrow()
     {
         canThrow = true;
